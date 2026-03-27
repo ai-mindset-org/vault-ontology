@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault Ontology — Living Knowledge System</title>
+<meta property="og:title" content="Vault Ontology — Living Knowledge System">
+<meta property="og:description" content="3+1 layer epistemological model with multi-agent extraction pipeline. 18,200 files across 4 layers.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#07070d;--bg2:#0c0c16;--bg3:#10101e;
+  --card:#111122;--card-hi:#181833;
+  --border:rgba(255,255,255,0.06);--border-hi:rgba(255,255,255,0.12);
+  --t:#e8e8f2;--t2:rgba(255,255,255,0.7);--t3:rgba(255,255,255,0.4);--t4:rgba(255,255,255,0.2);
+  --raw:#f59e0b;--know:#ec4899;--engage:#f97316;--wm:#06b6d4;
+  --obs:#818cf8;--merge:#a78bfa;--upd:#34d399;--change:#fbbf24;
+  --breath:#4dc9d4;
+}
+
+html{background:var(--bg);color:var(--t);font-family:'IBM Plex Mono',monospace;scroll-behavior:smooth}
+body{min-height:100vh;overflow-x:hidden}
+
+/* Noise */
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+
+.wrap{position:relative;z-index:1}
+
+/* ─── TYPOGRAPHY ─── */
+h1{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1.05}
+h2{font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:-0.02em;font-size:2.4rem;line-height:1.15}
+h3{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.3rem}
+p.lead{font-size:1.15rem;line-height:1.7;color:var(--t2);font-weight:300}
+p.body{font-size:0.95rem;line-height:1.7;color:var(--t2)}
+p.caption{font-size:0.75rem;color:var(--t3);line-height:1.5}
+
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+.section{padding:100px 0}
+.section + .section{border-top:1px solid var(--border)}
+.center{text-align:center}
+
+em.hl{font-style:normal;font-weight:500}
+em.raw{color:var(--raw)}
+em.know{color:var(--know)}
+em.engage{color:var(--engage)}
+em.wm{color:var(--wm)}
+em.breath{color:var(--breath);font-style:italic}
+
+/* ─── HERO ─── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;position:relative}
+.hero-badge{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--breath);border:1px solid rgba(77,201,212,0.2);padding:8px 20px;border-radius:24px;margin-bottom:32px;background:rgba(77,201,212,0.03)}
+.hero h1{font-size:clamp(3rem,7vw,6rem);margin-bottom:24px;background:linear-gradient(135deg,#f0f0ff 0%,#a78bfa 40%,#4dc9d4 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .lead{max-width:650px}
+.hero-meta{margin-top:48px;display:flex;align-items:center;gap:16px}
+.breath-dot{width:10px;height:10px;border-radius:50%;background:var(--breath);animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.3;transform:scale(.8);box-shadow:0 0 0 0 rgba(77,201,212,0)}50%{opacity:1;transform:scale(1.3);box-shadow:0 0 24px 10px rgba(77,201,212,.15)}}
+.hero-meta span{font-size:0.8rem;color:var(--t3);font-style:italic}
+.scroll-hint{position:absolute;bottom:40px;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bob 2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+.scroll-hint span{font-size:0.6rem;color:var(--t4);letter-spacing:.15em;text-transform:uppercase}
+.scroll-arrow{width:16px;height:16px;border-right:1.5px solid var(--t4);border-bottom:1.5px solid var(--t4);transform:rotate(45deg)}
+
+/* ─── STATS ─── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:64px 0;border-bottom:1px solid var(--border)}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 24px;text-align:center;transition:all .3s}
+.stat-card:hover{border-color:var(--border-hi);transform:translateY(-2px)}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:3.2rem;font-weight:700;line-height:1}
+.stat-pct{font-size:0.85rem;color:var(--t3);margin-top:2px}
+.stat-label{font-size:0.7rem;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;margin-top:8px}
+.stat-bar-wrap{height:4px;background:rgba(255,255,255,.03);border-radius:2px;margin-top:12px;overflow:hidden}
+.stat-bar-fill{height:100%;border-radius:2px;transition:width 1.5s ease}
+
+/* ─── MANIFESTO ─── */
+.manifesto{max-width:800px;margin:0 auto}
+.manifesto h2{margin-bottom:32px}
+.manifesto-block{margin-bottom:40px}
+.manifesto-block h3{margin-bottom:12px}
+.manifesto-block p{margin-bottom:8px}
+.manifesto-quote{border-left:3px solid var(--breath);padding-left:20px;margin:24px 0;font-style:italic;color:var(--t2);font-size:1rem;line-height:1.7}
+
+/* ─── LAYER DEEP DIVE ─── */
+.layer-section{padding:80px 0;position:relative}
+.layer-section + .layer-section{border-top:1px solid var(--border)}
+.layer-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.layer-text h2{margin-bottom:16px}
+.layer-text .question{font-size:1.3rem;font-style:italic;margin-bottom:20px}
+.layer-text p{margin-bottom:12px}
+.layer-visual-wrap{display:flex;flex-direction:column;gap:12px}
+.cat-tag{display:inline-block;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:6px;padding:6px 14px;font-size:0.8rem;margin:3px 4px 3px 0;transition:all .2s}
+.cat-tag:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
+.cat-tag .ct-count{font-family:'Space Grotesk',sans-serif;font-weight:600;margin-left:6px}
+.layer-svg{width:100%;max-width:400px;margin:0 auto}
+
+/* ─── PIPELINE ─── */
+.pipeline-bg{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.pipeline{display:flex;flex-direction:column;align-items:center;gap:0;padding-bottom:40px}
+.p-phase{font-size:0.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.2em;margin:32px 0 12px}
+.p-arrow{width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,.1),rgba(255,255,255,.02));position:relative}
+.p-arrow::after{content:'';position:absolute;bottom:-1px;left:-3px;width:7px;height:7px;border-right:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);transform:rotate(45deg)}
+.p-node{border:1px solid var(--border);border-radius:14px;padding:20px 28px;text-align:center;min-width:240px;max-width:380px;backdrop-filter:blur(4px);transition:all .3s}
+.p-node:hover{transform:scale(1.02);border-color:var(--border-hi)}
+.p-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.95rem;margin-bottom:4px}
+.p-desc{font-size:0.75rem;color:var(--t2)}
+.p-detail{font-size:0.65rem;color:var(--t3);margin-top:4px}
+
+.p-raw{background:rgba(245,158,11,.05);border-color:rgba(245,158,11,.2)}
+.p-raw .p-name{color:var(--raw)}
+.p-ext{background:rgba(255,255,255,.02)}
+.p-ext .p-name{color:var(--t2)}
+.p-obs{background:rgba(129,140,248,.05);border-color:rgba(129,140,248,.2)}
+.p-obs .p-name{color:var(--obs)}
+.p-chg{background:rgba(251,191,36,.05);border-color:rgba(251,191,36,.2)}
+.p-chg .p-name{color:var(--change)}
+.p-mrg{background:rgba(167,139,250,.05);border-color:rgba(167,139,250,.2)}
+.p-mrg .p-name{color:var(--merge)}
+.p-upd{background:rgba(52,211,153,.05);border-color:rgba(52,211,153,.2)}
+.p-upd .p-name{color:var(--upd)}
+.p-out-k{background:rgba(236,72,153,.05);border-color:rgba(236,72,153,.2)}
+.p-out-k .p-name{color:var(--know)}
+.p-out-e{background:rgba(249,115,22,.05);border-color:rgba(249,115,22,.2)}
+.p-out-e .p-name{color:var(--engage)}
+.p-out-w{background:rgba(6,182,212,.05);border-color:rgba(6,182,212,.2)}
+.p-out-w .p-name{color:var(--wm)}
+.p-bnd{background:transparent;border:1px dashed rgba(255,255,255,.08)}
+.p-bnd .p-name{color:var(--t3)}
+
+.p-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;width:100%;max-width:1100px}
+.p-row .p-node{flex:1;min-width:200px;max-width:250px}
+.p-fan{width:70%;max-width:800px;height:1px;background:rgba(255,255,255,.04);margin:12px 0}
+
+/* ─── GRAPH ─── */
+.graph-section{text-align:center}
+.graph-wrap{margin:40px auto 0;max-width:900px}
+.graph-svg{width:100%}
+
+/* ─── BOTTLENECK ─── */
+.bottleneck-bar{display:flex;height:16px;border-radius:8px;overflow:hidden;max-width:700px;margin:32px auto;background:var(--card)}
+.bb-seg{transition:width 1.5s ease}
+.bottleneck-legend{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:16px}
+.bl-item{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--t3)}
+.bl-dot{width:8px;height:8px;border-radius:50%}
+
+/* ─── RULES ─── */
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.rule-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;transition:all .3s}
+.rule-card:hover{border-color:var(--border-hi);background:var(--card-hi)}
+.rule-num{font-size:0.6rem;color:var(--breath);text-transform:uppercase;letter-spacing:.15em;margin-bottom:10px}
+.rule-title{font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:600;margin-bottom:8px}
+.rule-text{font-size:0.85rem;line-height:1.6;color:var(--t2)}
+.rule-text code{background:rgba(255,255,255,.05);padding:2px 8px;border-radius:4px;font-size:0.8rem}
+
+/* ─── DECISION TREE ─── */
+.dt-flow{display:flex;flex-direction:column;align-items:center;gap:0;max-width:520px;margin:0 auto}
+.dt-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 28px;font-size:0.95rem;text-align:center;width:100%}
+.dt-a{padding:10px 24px;border-radius:10px;font-size:0.9rem;font-weight:500;margin:10px 0}
+.dt-line{width:1px;height:12px;background:rgba(255,255,255,.06)}
+.dt-no{font-size:0.7rem;color:var(--t4);margin:4px 0}
+
+/* ─── FOOTER ─── */
+.footer{text-align:center;padding:64px 24px 48px;border-top:1px solid var(--border)}
+.footer-breath{display:inline-flex;align-items:center;gap:10px;margin-bottom:12px}
+.footer p{font-size:0.75rem;color:var(--t3);margin-top:4px}
+.footer-links{margin-top:16px;display:flex;justify-content:center;gap:24px}
+.footer-links a{font-size:0.7rem;color:var(--breath);text-decoration:none;border-bottom:1px solid rgba(77,201,212,.2);padding-bottom:2px;transition:all .2s}
+.footer-links a:hover{border-color:var(--breath)}
+
+/* ─── REVEAL ─── */
+.reveal{opacity:0;transform:translateY(24px);transition:all .7s cubic-bezier(.16,1,.3,1)}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  .layer-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .p-row{flex-direction:column;align-items:center}
+  .p-row .p-node{max-width:320px}
+  .p-fan{display:none}
+  h2{font-size:1.8rem}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr}
+  .stat-num{font-size:2.4rem}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-badge">ontology &mdash; collects &middot; processes &middot; visualizes</div>
+  <h1>Living Knowledge<br>System</h1>
+  <p class="lead">
+    A vault of <em class="raw">18,200 files</em> organized through four epistemological layers.
+    Raw evidence flows through a multi-agent pipeline into
+    <em class="know">stable truth</em>, <em class="engage">relationship memory</em>,
+    and <em class="wm">actionable synthesis</em>.
+  </p>
+  <div class="hero-meta">
+    <div class="breath-dot"></div>
+    <span>the vault is breathing</span>
+  </div>
+  <div class="scroll-hint">
+    <span>explore the system</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ═══════════════ STATS ═══════════════ -->
+<div class="container">
+  <div class="stats-row">
+    <div class="stat-card reveal">
+      <div class="stat-num" style="color:var(--raw)" data-target="15000">0</div>
+      <div class="stat-pct">78%</div>
+      <div class="stat-label">raw-data</div>
+      <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:0;background:var(--raw)" data-width="78%"></div></div>
+    </div>
+    <div class="stat-card reveal">
+      <div class="stat-num" style="color:var(--know)" data-target="2500">0</div>
+      <div class="stat-pct">13%</div>
+      <div class="stat-label">knowledge</div>
+      <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:0;background:var(--know)" data-width="13%"></div></div>
+    </div>
+    <div class="stat-card reveal">
+      <div class="stat-num" style="color:var(--engage)" data-target="500">0</div>
+      <div class="stat-pct">3%</div>
+      <div class="stat-label">engagement</div>
+      <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:0;background:var(--engage)" data-width="3%"></div></div>
+    </div>
+    <div class="stat-card reveal">
+      <div class="stat-num" style="color:var(--wm)" data-target="200">0</div>
+      <div class="stat-pct">1%</div>
+      <div class="stat-label">working-memory</div>
+      <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:0;background:var(--wm)" data-width="1%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MANIFESTO ═══════════════ -->
+<section class="section">
+  <div class="container manifesto">
+    <h2 class="center reveal">What This System Does</h2>
+
+    <div class="manifesto-block reveal">
+      <h3>It Collects</h3>
+      <p class="body">Every transcript from Krisp, every voice note, every web clipping, every AI conversation, every journal entry, every Linear task snapshot &mdash; all flow into <em class="raw">raw-data</em>. This is the evidence layer. Once something enters here, it never changes. It's geological &mdash; sediment that accumulates, immutable and timestamped.</p>
+      <p class="caption">~15,000 files &middot; transcripts/ &middot; voicenotes/ &middot; Clippings/ &middot; AI chats/ &middot; _journal/ &middot; Linear Issues/ &middot; _sessions/</p>
+    </div>
+
+    <div class="manifesto-block reveal">
+      <h3>It Processes</h3>
+      <p class="body">A six-phase multi-agent pipeline extracts meaning from raw inputs. Binary files become text. Four domain observers run in parallel &mdash; examining people, products, operations, and market signals. A change detector catches contradictions with existing facts. A merge judge deduplicates and resolves conflicts. Then three writers update the output layers, each staying strictly within its boundary.</p>
+      <p class="caption">Phase 0: extraction &middot; Phase 0.5: multimodal &middot; Phase 1: 4 observers &middot; Phase 1b: reconciliation &middot; Phase 2: 3 writers &middot; Boundary check</p>
+    </div>
+
+    <div class="manifesto-block reveal">
+      <h3>It Visualizes</h3>
+      <p class="body">This dashboard is the living map. It shows where information lives, how it flows, and where the bottleneck is. 78% of the vault is raw evidence that has never been processed into stable knowledge. The pipeline exists to close this gap &mdash; to turn 15,000 recordings and conversations into facts you can act on.</p>
+    </div>
+
+    <div class="manifesto-quote reveal">
+      "Every fact needs a source. Every source is immutable. Every synthesis has an expiry date."
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ LAYER: RAW-DATA ═══════════════ -->
+<section class="section layer-section">
+  <div class="container">
+    <div class="layer-grid reveal">
+      <div class="layer-text">
+        <h2 style="color:var(--raw)">raw-data/</h2>
+        <div class="question" style="color:var(--raw)">"What evidence do we have?"</div>
+        <p class="body">The sediment layer. Everything that enters the vault as a verbatim record of something that happened. Transcripts of calls. Voice recordings made on walks. Articles clipped from the web. Conversations with AI models. Daily journal entries. Screenshots. Task snapshots from Linear.</p>
+        <p class="body">This layer has one absolute rule: <strong>immutability</strong>. Once a file enters raw-data, its content never changes. You can tag it, link to it, extract from it &mdash; but never edit the original. It's your geological record.</p>
+        <p class="body">Signals: timestamp in filename (YYYY-MM-DD HH:MM), tags like <code>{transcript}</code>, <code>{krisp}</code>, <code>{clip}</code>, <code>{voicenote}</code>. Content is a capture, not a creation.</p>
+      </div>
+      <div class="layer-visual-wrap">
+        <svg viewBox="0 0 400 300" class="layer-svg" fill="none">
+          <!-- Sediment layers -->
+          <rect x="40" y="240" width="320" height="20" rx="4" fill="#f59e0b" opacity="0.7"/>
+          <rect x="55" y="215" width="290" height="18" rx="4" fill="#f59e0b" opacity="0.5"/>
+          <rect x="70" y="192" width="260" height="16" rx="4" fill="#f59e0b" opacity="0.35"/>
+          <rect x="85" y="171" width="230" height="14" rx="4" fill="#f59e0b" opacity="0.25"/>
+          <rect x="100" y="152" width="200" height="12" rx="4" fill="#f59e0b" opacity="0.15"/>
+          <rect x="115" y="135" width="170" height="10" rx="4" fill="#f59e0b" opacity="0.1"/>
+          <!-- Falling particles -->
+          <circle cx="200" cy="40" r="4" fill="#f59e0b" opacity="0.5"><animate attributeName="cy" values="40;120;40" dur="4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0.1;0.5" dur="4s" repeatCount="indefinite"/></circle>
+          <circle cx="160" cy="60" r="3" fill="#f59e0b" opacity="0.3"><animate attributeName="cy" values="60;130;60" dur="5s" repeatCount="indefinite"/></circle>
+          <circle cx="240" cy="30" r="2.5" fill="#f59e0b" opacity="0.4"><animate attributeName="cy" values="30;110;30" dur="3.5s" repeatCount="indefinite"/></circle>
+          <!-- Labels -->
+          <text x="200" y="290" text-anchor="middle" fill="#f59e0b" font-size="11" font-family="IBM Plex Mono" opacity="0.5">~15,000 immutable records</text>
+        </svg>
+        <div>
+          <span class="cat-tag">transcripts <span class="ct-count" style="color:var(--raw)">~1,500</span></span>
+          <span class="cat-tag">journal <span class="ct-count" style="color:var(--raw)">~1,200</span></span>
+          <span class="cat-tag">ai-chats <span class="ct-count" style="color:var(--raw)">~800</span></span>
+          <span class="cat-tag">clippings <span class="ct-count" style="color:var(--raw)">~250</span></span>
+          <span class="cat-tag">linear <span class="ct-count" style="color:var(--raw)">~210</span></span>
+          <span class="cat-tag">voicenotes <span class="ct-count" style="color:var(--raw)">~60</span></span>
+          <span class="cat-tag">sessions <span class="ct-count" style="color:var(--raw)">~60</span></span>
+          <span class="cat-tag">summaries <span class="ct-count" style="color:var(--raw)">~35</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ LAYER: KNOWLEDGE ═══════════════ -->
+<section class="section layer-section">
+  <div class="container">
+    <div class="layer-grid reveal">
+      <div class="layer-text">
+        <h2 style="color:var(--know)">knowledge/</h2>
+        <div class="question" style="color:var(--know)">"What is true?"</div>
+        <p class="body">The crystal layer. Facts that have been verified, synthesized, and stabilized. Team member roles. Partner profiles. Company rules and processes. Product definitions. Strategic documents. Published articles. Research outputs. The 12,000+ atomic notes &mdash; quotes, insights, principles &mdash; that form the bedrock of understanding.</p>
+        <p class="body">Every knowledge entry carries <strong>provenance</strong>: which raw-data it came from and a confidence level (high, medium, low). Knowledge is stable over weeks and months &mdash; it only changes when truth itself changes.</p>
+        <p class="body">Three sub-domains: <em class="know">People</em> (roles, partners, curators, authors), <em class="know">Company</em> (rules, processes, products, labs, strategy, offers), <em class="know">Domain</em> (articles, research, PKM, self-knowledge, atomic notes).</p>
+      </div>
+      <div class="layer-visual-wrap">
+        <svg viewBox="0 0 400 300" class="layer-svg" fill="none">
+          <!-- Crystal -->
+          <polygon points="200,30 280,100 260,220 140,220 120,100" stroke="#ec4899" stroke-width="2" fill="none" opacity="0.5"><animate attributeName="opacity" values="0.3;0.7;0.3" dur="6s" repeatCount="indefinite"/></polygon>
+          <polygon points="200,50 265,108 248,210 152,210 135,108" stroke="#ec4899" stroke-width="1.5" fill="rgba(236,72,153,0.03)" opacity="0.7"/>
+          <polygon points="200,70 250,116 236,200 164,200 150,116" stroke="#ec4899" stroke-width="1" fill="rgba(236,72,153,0.02)" opacity="0.9"/>
+          <line x1="200" y1="30" x2="200" y2="220" stroke="#ec4899" stroke-width="0.5" opacity="0.15"/>
+          <line x1="120" y1="100" x2="280" y2="100" stroke="#ec4899" stroke-width="0.5" opacity="0.15"/>
+          <line x1="140" y1="220" x2="280" y2="100" stroke="#ec4899" stroke-width="0.5" opacity="0.08"/>
+          <line x1="260" y1="220" x2="120" y2="100" stroke="#ec4899" stroke-width="0.5" opacity="0.08"/>
+          <text x="200" y="270" text-anchor="middle" fill="#ec4899" font-size="11" font-family="IBM Plex Mono" opacity="0.5">~2,500 stable facts</text>
+        </svg>
+        <div>
+          <span class="cat-tag">People</span>
+          <span class="cat-tag">team-roles <span class="ct-count" style="color:var(--know)">8</span></span>
+          <span class="cat-tag">partners <span class="ct-count" style="color:var(--know)">40+</span></span>
+          <span class="cat-tag">authors <span class="ct-count" style="color:var(--know)">360</span></span>
+          <span class="cat-tag">Company</span>
+          <span class="cat-tag">rules <span class="ct-count" style="color:var(--know)">70+</span></span>
+          <span class="cat-tag">strategy <span class="ct-count" style="color:var(--know)">570</span></span>
+          <span class="cat-tag">labs <span class="ct-count" style="color:var(--know)">200+</span></span>
+          <span class="cat-tag">Domain</span>
+          <span class="cat-tag">articles <span class="ct-count" style="color:var(--know)">105</span></span>
+          <span class="cat-tag">pkm <span class="ct-count" style="color:var(--know)">745</span></span>
+          <span class="cat-tag">atomic <span class="ct-count" style="color:var(--know)">12K+</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ LAYER: ENGAGEMENT ═══════════════ -->
+<section class="section layer-section">
+  <div class="container">
+    <div class="layer-grid reveal">
+      <div class="layer-text">
+        <h2 style="color:var(--engage)">engagement/</h2>
+        <div class="question" style="color:var(--engage)">"What happened between us?"</div>
+        <p class="body">The pulse layer. Every interaction &mdash; calls, meetings, partnership touches, lab activity, exit interviews &mdash; recorded as a relationship event. This isn't a fact about the world (knowledge) or a task to do (working-memory). It's the <strong>heartbeat of connections</strong>.</p>
+        <p class="body">CRM partner cards track progression through stages. Meeting notes capture agreements and action items. Lab cohort data shows who showed up, who submitted homework, who is engaged. Exit interviews reveal what worked and what didn't.</p>
+        <p class="body">This layer answers: when did we last talk? What was agreed? How is the relationship trending? It's the operational CAIO record &mdash; Chief AI Officer's interaction log.</p>
+      </div>
+      <div class="layer-visual-wrap">
+        <svg viewBox="0 0 400 300" class="layer-svg" fill="none">
+          <!-- Heartbeat -->
+          <path d="M20,150 L80,150 L100,80 L120,200 L140,120 L160,170 L180,140 L200,155 L220,145 L240,160 L260,130 L280,180 L300,140 L320,150 L380,150" stroke="#f97316" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round" stroke-linejoin="round">
+            <animate attributeName="stroke-dasharray" values="0,1000;800,200" dur="3s" repeatCount="indefinite"/>
+          </path>
+          <!-- Pulse circle -->
+          <circle cx="200" cy="150" r="30" stroke="#f97316" stroke-width="1.5" fill="rgba(249,115,22,0.03)" opacity="0.3"><animate attributeName="r" values="25;40;25" dur="2.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.2;0.5;0.2" dur="2.5s" repeatCount="indefinite"/></circle>
+          <circle cx="200" cy="150" r="8" fill="#f97316" opacity="0.4"><animate attributeName="r" values="6;10;6" dur="2.5s" repeatCount="indefinite"/></circle>
+          <text x="200" y="250" text-anchor="middle" fill="#f97316" font-size="11" font-family="IBM Plex Mono" opacity="0.5">~500 interaction records</text>
+        </svg>
+        <div>
+          <span class="cat-tag">call-logs</span>
+          <span class="cat-tag">partner-touches</span>
+          <span class="cat-tag">lab-activity</span>
+          <span class="cat-tag">crm-state</span>
+          <span class="cat-tag">exit-interviews</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ LAYER: WORKING-MEMORY ═══════════════ -->
+<section class="section layer-section">
+  <div class="container">
+    <div class="layer-grid reveal">
+      <div class="layer-text">
+        <h2 style="color:var(--wm)">working-memory/</h2>
+        <div class="question" style="color:var(--wm)">"What to do next?"</div>
+        <p class="body">The flame layer. Bright, volatile, designed to burn out. Daily focus sentences that expire at midnight. PM analyses that matter for one or two weeks. Draft messages that vanish once sent. Planning docs that expire after the event. Active context for agents that becomes stale when project state changes.</p>
+        <p class="body">This is the smallest layer by design &mdash; only ~200 files at any given time. If working-memory grows too large, it means decisions aren't being made. The flame should burn hot and fast, not smolder.</p>
+        <p class="body"><strong>Decay rules:</strong> focus (1 day), drafts (until sent), analyses (1-2 weeks), planning (until event), context (until state changes), tasks (until done).</p>
+      </div>
+      <div class="layer-visual-wrap">
+        <svg viewBox="0 0 400 300" class="layer-svg" fill="none">
+          <!-- Flame -->
+          <path d="M200,260 C200,260 130,180 150,120 C158,96 175,80 200,50 C225,80 242,96 250,120 C270,180 200,260 200,260Z" stroke="#06b6d4" stroke-width="2" fill="rgba(6,182,212,0.04)" opacity="0.6">
+            <animate attributeName="d" values="M200,260 C200,260 130,180 150,120 C158,96 175,80 200,50 C225,80 242,96 250,120 C270,180 200,260 200,260Z;M200,260 C200,260 140,190 155,125 C162,100 178,70 200,35 C222,70 238,100 245,125 C260,190 200,260 200,260Z;M200,260 C200,260 130,180 150,120 C158,96 175,80 200,50 C225,80 242,96 250,120 C270,180 200,260 200,260Z" dur="3s" repeatCount="indefinite"/>
+          </path>
+          <path d="M200,260 C200,260 160,200 170,150 C175,130 185,115 200,90 C215,115 225,130 230,150 C240,200 200,260 200,260Z" stroke="#06b6d4" stroke-width="1" fill="rgba(6,182,212,0.03)" opacity="0.8">
+            <animate attributeName="d" values="M200,260 C200,260 160,200 170,150 C175,130 185,115 200,90 C215,115 225,130 230,150 C240,200 200,260 200,260Z;M200,260 C200,260 165,205 175,155 C180,135 188,110 200,80 C212,110 220,135 225,155 C235,205 200,260 200,260Z;M200,260 C200,260 160,200 170,150 C175,130 185,115 200,90 C215,115 225,130 230,150 C240,200 200,260 200,260Z" dur="2.5s" repeatCount="indefinite"/>
+          </path>
+          <circle cx="200" cy="160" r="10" fill="#06b6d4" opacity="0.2"><animate attributeName="opacity" values="0.1;0.35;0.1" dur="2s" repeatCount="indefinite"/><animate attributeName="r" values="8;14;8" dur="2s" repeatCount="indefinite"/></circle>
+          <text x="200" y="290" text-anchor="middle" fill="#06b6d4" font-size="11" font-family="IBM Plex Mono" opacity="0.5">~200 active files &middot; expires by design</text>
+        </svg>
+        <div>
+          <span class="cat-tag">focus <span class="ct-count" style="color:var(--wm)">1d</span></span>
+          <span class="cat-tag">analyses <span class="ct-count" style="color:var(--wm)">1-2w</span></span>
+          <span class="cat-tag">planning <span class="ct-count" style="color:var(--wm)">event</span></span>
+          <span class="cat-tag">drafts <span class="ct-count" style="color:var(--wm)">sent</span></span>
+          <span class="cat-tag">context <span class="ct-count" style="color:var(--wm)">state</span></span>
+          <span class="cat-tag">tasks <span class="ct-count" style="color:var(--wm)">done</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PIPELINE ═══════════════ -->
+<section class="section pipeline-bg">
+  <div class="container">
+    <div class="center reveal" style="margin-bottom:48px">
+      <h2>Agent Pipeline</h2>
+      <p class="lead" style="max-width:600px;margin:16px auto 0">Six phases. Four parallel observers. Boundary enforcement. Codos-inspired architecture adapted for this vault.</p>
+    </div>
+
+    <div class="pipeline">
+      <div class="p-phase">input</div>
+      <div class="p-node p-raw reveal"><div class="p-name">raw-data/</div><div class="p-desc">MD, PDF, XLSX, images</div><div class="p-detail">~15,000 immutable source files</div></div>
+      <div class="p-arrow"></div>
+      <div class="p-phase">phase 0 &mdash; binary extraction</div>
+      <div class="p-node p-ext reveal"><div class="p-name">extract-raw-binaries</div><div class="p-desc">PDF &rarr; text &middot; XLSX &rarr; tables &middot; images &rarr; descriptions</div></div>
+      <div class="p-arrow"></div>
+      <div class="p-phase">phase 0.5 &mdash; multimodal reading</div>
+      <div class="p-node p-ext reveal"><div class="p-name">Multimodal Extraction</div><div class="p-desc">4-5 parallel agents &middot; independent reads &middot; no shared state</div></div>
+      <div class="p-arrow"></div>
+      <div class="p-phase">phase 1 &mdash; domain observers (parallel)</div>
+      <div class="p-fan"></div>
+      <div class="p-row">
+        <div class="p-node p-obs reveal"><div class="p-name">people &amp; org</div><div class="p-desc">roles, departments, OKRs, relationships</div></div>
+        <div class="p-node p-obs reveal"><div class="p-name">products &amp; tech</div><div class="p-desc">features, tech stack, infrastructure</div></div>
+        <div class="p-node p-obs reveal"><div class="p-name">operations</div><div class="p-desc">processes, culture, financials, KPIs</div></div>
+        <div class="p-node p-obs reveal"><div class="p-name">market &amp; clients</div><div class="p-desc">trends, competitors, audience, positioning</div></div>
+      </div>
+      <div class="p-fan"></div>
+      <div class="p-arrow"></div>
+      <div class="p-phase">phase 1b &mdash; reconciliation</div>
+      <div class="p-node p-chg reveal"><div class="p-name">change-detector</div><div class="p-desc">flags contradictions &middot; marks superseded facts</div></div>
+      <div class="p-arrow"></div>
+      <div class="p-node p-mrg reveal"><div class="p-name">merge-judge</div><div class="p-desc">deduplicates &middot; resolves conflicts &middot; writes merge plan</div></div>
+      <div class="p-arrow"></div>
+      <div class="p-phase">phase 2 &mdash; layer writers (parallel)</div>
+      <div class="p-fan"></div>
+      <div class="p-row">
+        <div class="p-node p-upd reveal"><div class="p-name">memory-updater</div><div class="p-desc">writes stable facts to knowledge/</div></div>
+        <div class="p-node p-upd reveal"><div class="p-name">engagement-updater</div><div class="p-desc">writes interaction records</div></div>
+        <div class="p-node p-upd reveal" style="border-style:dashed"><div class="p-name">wm-updater</div><div class="p-desc">refreshes priorities &amp; synthesis</div></div>
+      </div>
+      <div class="p-fan"></div>
+      <div class="p-arrow"></div>
+      <div class="p-node p-bnd reveal"><div class="p-name">check-agent-boundaries.sh</div><div class="p-desc">snapshot mtime &middot; verify no cross-layer writes</div></div>
+      <div class="p-arrow"></div>
+      <div class="p-phase">output</div>
+      <div class="p-row">
+        <div class="p-node p-out-k reveal"><div class="p-name">knowledge/</div><div class="p-desc">stable facts &middot; ~2,500 files</div></div>
+        <div class="p-node p-out-e reveal"><div class="p-name">engagement/</div><div class="p-desc">interaction record &middot; ~500 files</div></div>
+        <div class="p-node p-out-w reveal"><div class="p-name">working-memory/</div><div class="p-desc">synthesis &amp; action &middot; ~200 files</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ BOTTLENECK ═══════════════ -->
+<section class="section">
+  <div class="container center">
+    <h2 class="reveal">The Bottleneck</h2>
+    <p class="lead reveal" style="max-width:600px;margin:16px auto 0">
+      78% of the vault is unprocessed raw data. Most of those 1,500 transcripts
+      have never been turned into knowledge. This is what the pipeline is for.
+    </p>
+    <div class="bottleneck-bar reveal">
+      <div class="bb-seg" style="width:78%;background:var(--raw)"></div>
+      <div class="bb-seg" style="width:13%;background:var(--know)"></div>
+      <div class="bb-seg" style="width:3%;background:var(--engage)"></div>
+      <div class="bb-seg" style="width:1%;background:var(--wm)"></div>
+      <div class="bb-seg" style="width:5%;background:rgba(255,255,255,.08)"></div>
+    </div>
+    <div class="bottleneck-legend reveal">
+      <div class="bl-item"><div class="bl-dot" style="background:var(--raw)"></div>raw-data 78%</div>
+      <div class="bl-item"><div class="bl-dot" style="background:var(--know)"></div>knowledge 13%</div>
+      <div class="bl-item"><div class="bl-dot" style="background:var(--engage)"></div>engagement 3%</div>
+      <div class="bl-item"><div class="bl-dot" style="background:var(--wm)"></div>working-memory 1%</div>
+      <div class="bl-item"><div class="bl-dot" style="background:rgba(255,255,255,.2)"></div>system 5%</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ RULES ═══════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 class="center reveal">Rules of the System</h2>
+    <p class="lead center reveal" style="max-width:500px;margin:16px auto 40px">Six constraints that keep the ontology honest</p>
+    <div class="rules-grid">
+      <div class="rule-card reveal">
+        <div class="rule-num">Rule 01</div>
+        <div class="rule-title">Provenance</div>
+        <div class="rule-text">Every fact carries its birth certificate: <code>source: raw-data/...</code> and <code>confidence: high | medium | low</code>. No orphan claims.</div>
+      </div>
+      <div class="rule-card reveal">
+        <div class="rule-num">Rule 02</div>
+        <div class="rule-title">Boundary</div>
+        <div class="rule-text">One agent per layer. The agent that extracts never synthesizes. The agent that writes knowledge never touches working-memory. Separation of concerns at the epistemological level.</div>
+      </div>
+      <div class="rule-card reveal">
+        <div class="rule-num">Rule 03</div>
+        <div class="rule-title">Naming</div>
+        <div class="rule-text"><code>{date}-{slug}.md</code> &mdash; every ontology file carries its birthday. No ambiguity about when a fact was established.</div>
+      </div>
+      <div class="rule-card reveal">
+        <div class="rule-num">Rule 04</div>
+        <div class="rule-title">Immutability</div>
+        <div class="rule-text">raw-data is carved in stone. Append metadata, add links, extract facts &mdash; but never modify the original content. The evidence must remain intact.</div>
+      </div>
+      <div class="rule-card reveal">
+        <div class="rule-num">Rule 05</div>
+        <div class="rule-title">Flow</div>
+        <div class="rule-text">Information flows in one direction: raw-data &rarr; knowledge &rarr; working-memory. No shortcuts. No layer skipping. Evidence before truth. Truth before action.</div>
+      </div>
+      <div class="rule-card reveal">
+        <div class="rule-num">Rule 06</div>
+        <div class="rule-title">Decay</div>
+        <div class="rule-text">Working-memory has an expiry date. Daily focus dies at midnight. Drafts die when sent. If working-memory keeps growing, decisions aren't being made.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ DECISION TREE ═══════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 class="center reveal">Where Does It Belong?</h2>
+    <p class="lead center reveal" style="max-width:450px;margin:16px auto 40px">Four questions. One answer. No ambiguity.</p>
+    <div class="dt-flow reveal">
+      <div class="dt-q">Is it a verbatim record of something that happened?</div>
+      <div class="dt-line"></div>
+      <div class="dt-a" style="background:rgba(245,158,11,.08);color:var(--raw)">YES &rarr; raw-data/</div>
+      <div class="dt-no">&darr; no</div>
+      <div class="dt-q">Is it a record of interaction between people or entities?</div>
+      <div class="dt-line"></div>
+      <div class="dt-a" style="background:rgba(249,115,22,.08);color:var(--engage)">YES &rarr; engagement/</div>
+      <div class="dt-no">&darr; no</div>
+      <div class="dt-q">Is it a stable fact that won't change this week?</div>
+      <div class="dt-line"></div>
+      <div class="dt-a" style="background:rgba(236,72,153,.08);color:var(--know)">YES &rarr; knowledge/</div>
+      <div class="dt-no">&darr; no</div>
+      <div class="dt-q">Is it actionable, ephemeral synthesis?</div>
+      <div class="dt-line"></div>
+      <div class="dt-a" style="background:rgba(6,182,212,.08);color:var(--wm)">YES &rarr; working-memory/</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="footer-breath">
+    <div class="breath-dot" style="width:6px;height:6px"></div>
+    <span style="font-size:0.8rem;color:var(--t2)">vault ontology &mdash; living knowledge system</span>
+  </div>
+  <p>/ontology skill &middot; collects, processes, and visualizes vault data</p>
+  <p>scanned 2026-03-27 &middot; ~18,200 files &middot; 4 layers &middot; 6-phase pipeline</p>
+  <div class="footer-links">
+    <a href="https://github.com/aPoWall/vault-ontology">GitHub</a>
+  </div>
+</footer>
+
+</div>
+
+<!-- ═══════════════ PARTICLES + COUNTERS ═══════════════ -->
+<canvas id="particles" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
+
+<script>
+// Particles
+!function(){const c=document.getElementById('particles'),x=c.getContext('2d');let w,h,P=[];const N=50;function r(){w=c.width=innerWidth;h=c.height=innerHeight}addEventListener('resize',r);r();for(let i=0;i<N;i++)P.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*1.2+.4,a:Math.random()*.1+.02});function d(){x.clearRect(0,0,w,h);for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle=`rgba(77,201,212,${p.a})`;x.fill()}for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<120){x.beginPath();x.moveTo(P[i].x,P[i].y);x.lineTo(P[j].x,P[j].y);x.strokeStyle=`rgba(77,201,212,${.025*(1-dist/120)})`;x.stroke()}}requestAnimationFrame(d)}d()}();
+
+// Counter animation
+function animateCounters(){document.querySelectorAll('[data-target]').forEach(el=>{const t=+el.dataset.target,dur=1800,st=performance.now();function u(now){const p=Math.min((now-st)/dur,1),e=1-Math.pow(1-p,3),v=Math.round(t*e);el.textContent=t>=1000?(v/1000).toFixed(1)+'K':'~'+v;if(p<1)requestAnimationFrame(u);else el.textContent=t>=1000?(t/1000).toFixed(1)+'K':'~'+t}requestAnimationFrame(u)})}
+
+// Scroll reveal
+const obs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('vis')})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Bars + counters on visible
+const sObs=new IntersectionObserver(e=>{if(e[0].isIntersecting){animateCounters();document.querySelectorAll('[data-width]').forEach(b=>{b.style.width=b.dataset.width});sObs.disconnect()}},{threshold:.3});
+sObs.observe(document.querySelector('.stats-row'));
+</script>
+
+</body>
+</html>
